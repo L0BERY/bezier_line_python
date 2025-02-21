@@ -1,5 +1,6 @@
 import math
 from kivy.app import App
+from kivy.clock import Clock
 from kivy.config import Config
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
@@ -68,7 +69,7 @@ class MyWidget(Widget):
                     self.circles.append(circle)
                     self.circle_coords.append((round(touch.x), round(touch.y)))
                     if len(self.circle_coords) > 1:
-                        Color(1, 0, 0, 1)
+                        Color(1, 0, 0, .5)
                         self.line.append(Line(points = [self.circle_coords[len(self.circles)-2], self.circle_coords[len(self.circles)-1]], width=1))
                     # print(self.circle_coords)
                     label = Label(text=str(len(self.circles)), pos=(touch.x-45, touch.y-35), font_size=10)
@@ -97,7 +98,7 @@ class MyWidget(Widget):
                                 self.canvas.remove(self.line[i-1])
                                 del self.line[i-1]
                                 with self.canvas:
-                                    Color(1, 0, 0, 1)
+                                    Color(1, 0, 0, .5)
                                     self.line.insert(i-1, Line(points = [self.circle_coords[i-1], self.circle_coords[i]], width=1))
                     
                     self.circle_labels[i].color = (0,0,0,0)
@@ -133,16 +134,17 @@ class MainApp(App):
     def build(self):
         parent = Widget()
         
-        but_start = Button(text= 'Start', pos= (30, 30), size= (60, 40), background_color= 'lime')
-        but_start.bind(on_press = self.start)
+        # but_start = Button(text= 'Start', pos= (30, 30), size= (60, 40), background_color= 'lime')
+        # but_start.bind(on_press = self.start)
+        Clock.schedule_interval(self.start, 0.02)
         self.point = MyWidget()
         self.line = Bezie()
         parent.add_widget(self.point)
-        parent.add_widget(but_start)
+        # parent.add_widget(but_start)
         parent.add_widget(self.line)
         return parent
     
-    def start(self, event):
+    def start(self, dt):
         a = self.point.get_cord()
         if len(a) > 0:
             self.line.draw(a)
